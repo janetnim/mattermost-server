@@ -17,7 +17,7 @@ jobs:
   setup:
     working_directory: ~/mattermost/mattermost-server
     docker:
-      - image: mattermost/mattermost-build-webapp:oct-2-2018
+      - image: mattermost/mattermost-build-webapp:20200829_node-10.22
     steps:
       - checkout
       - run: |
@@ -28,7 +28,7 @@ jobs:
           export WEBAPP_GIT_COMMIT=$(git rev-parse HEAD)
           echo "$WEBAPP_GIT_COMMIT"
 
-          trap 'npm ci && cd node_modules/mattermost-redux && npm i && npm run build && cd - && make build' ERR
+          trap 'npm ci && cd node_modules/mattermost-redux && npm ci && npm run build && cd - && make build' ERR
           curl -f -o ./dist.tar.gz https://pr-builds.mattermost.com/mattermost-webapp/commit/${WEBAPP_GIT_COMMIT}/mattermost-webapp.tar.gz
           mkdir ./dist && tar -xvf ./dist.tar.gz -C ./dist --strip-components=1
           trap - ERR

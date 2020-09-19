@@ -1,0 +1,26 @@
+version: '2.4'
+services:
+  postgres:
+    container_name: mattermost-postgres
+    ports:
+      - "5432:5432"
+    extends:
+        file: build/docker-compose.common.yml
+        service: postgres
+
+  start_dependencies:
+    image: mattermost/mattermost-wait-for-dep:latest
+    networks:
+      - mm-test
+    depends_on:
+      - postgres
+    command: postgres:5432
+
+networks:
+  mm-test:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.254.0/24
+          ip_range: 192.168.254.0/24
